@@ -29,7 +29,7 @@ public class Movement : MonoBehaviour
         var spaceButton = Input.GetButtonDown("Jump");
 
         if (spaceButton && _isOnTheFloor)
-            _rigidbody.AddForce(new Vector2(0, 300));
+            _rigidbody.AddForce(new Vector2(0, 800));
     }
 
     void OnTriggerEnter2D(Collider2D other)
