@@ -9,10 +9,12 @@ public class Movement : MonoBehaviour
     [SerializeField]
     private float _speed;
     [SerializeField]
-    private Animator animator;
+    private Animator _animator;
+    [SerializeField]
+    private Transform _bulletSpawn;
 
     private bool _isOnTheFloor;
-    private bool _isFacingRight = true;
+    public bool IsFacingRight { get; private set; } = true;
 
     void Update()
     {
@@ -27,9 +29,9 @@ public class Movement : MonoBehaviour
     void GetHorizontalMovement()
     {
         var movement = Input.GetAxis("Horizontal");
-        animator.SetBool("RunningState", movement != 0);
+        _animator.SetBool("RunningState", movement != 0);
         
-        if (movement > 0 && !_isFacingRight || movement < 0 && _isFacingRight)
+        if (movement > 0 && !IsFacingRight || movement < 0 && IsFacingRight)
             Flip();
 
         _rigidbody.velocity = new Vector2(movement * Time.deltaTime * _speed, _rigidbody.velocity.y);
@@ -47,7 +49,7 @@ public class Movement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        _isOnTheFloor = other.CompareTag("Ground");
+        _isOnTheFloor = !_isOnTheFloor && other.CompareTag("Ground") ? true : _isOnTheFloor;
     }
 
     void OnTriggerExit2D(Collider2D other)
@@ -58,10 +60,7 @@ public class Movement : MonoBehaviour
 
     private void Flip()
     {
-        _isFacingRight = !_isFacingRight;
-
-        Vector3 theScale = transform.localScale;
-        theScale.x *= -1;
-        transform.localScale = theScale;
+        IsFacingRight = !IsFacingRight;
+        transform.Rotate(0, 180, 0);
     }
 }
